@@ -218,6 +218,27 @@ export default function EditorPanel({ nodeId, nodeLabel, onClose, onCodeRun }: E
           theme="vs-dark"
           value={code}
           onChange={(val) => setCode(val || '')}
+          onMount={(editor, monaco) => {
+            editor.onKeyDown(async (e) => {
+              if ((e.ctrlKey || e.metaKey) && e.keyCode === monaco.KeyCode.KeyV) {
+                try {
+                  const text = await navigator.clipboard.readText();
+                  const selection = editor.getSelection();
+                  if (selection && text) {
+                    editor.executeEdits('custom-paste', [{
+                      range: selection,
+                      text: text,
+                      forceMoveMarkers: true
+                    }]);
+                  }
+                  e.preventDefault();
+                  e.stopPropagation();
+                } catch (err) {
+                  console.error("Explicit clipboard read failed natively", err);
+                }
+              }
+            });
+          }}
           options={{
             minimap: { enabled: false },
             fontSize: 14,
