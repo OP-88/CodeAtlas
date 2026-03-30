@@ -167,7 +167,10 @@ function Flowboard() {
 
   return (
     <div style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'row', background: '#121212', overflow: 'hidden' }}>
-      <Sidebar />
+      <Sidebar onOpenRawScript={() => {
+        setActiveNodeId('raw-script-engine');
+        setActiveNodeLabel('Raw Script Framework');
+      }} />
       <div 
         style={{ 
           flexGrow: 1, 
