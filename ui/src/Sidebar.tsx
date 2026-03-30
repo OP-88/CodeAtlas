@@ -36,6 +36,79 @@ const CATEGORIES = [
   }
 ];
 
+// Smart fuzzy matcher for 150+ framework identities
+const getDeviconClass = (name: string) => {
+  const n = name.toLowerCase();
+  if (n.includes('react')) return 'devicon-react-original';
+  if (n.includes('vue')) return 'devicon-vuejs-plain';
+  if (n.includes('angular')) return 'devicon-angularjs-plain';
+  if (n.includes('svelte')) return 'devicon-svelte-plain';
+  if (n.includes('next')) return 'devicon-nextjs-original';
+  if (n.includes('nuxt')) return 'devicon-nuxtjs-plain';
+  if (n.includes('html')) return 'devicon-html5-plain';
+  if (n.includes('css')) return 'devicon-css3-plain';
+  if (n.includes('tailwind')) return 'devicon-tailwindcss-plain';
+  if (n.includes('bootstrap')) return 'devicon-bootstrap-plain';
+  if (n.includes('material')) return 'devicon-materialui-plain';
+  if (n.includes('webpack')) return 'devicon-webpack-plain';
+  if (n.includes('babel')) return 'devicon-babel-plain';
+  if (n.includes('node')) return 'devicon-nodejs-plain';
+  if (n.includes('fastapi')) return 'devicon-fastapi-plain';
+  if (n.includes('python')) return 'devicon-python-plain';
+  if (n.includes('django')) return 'devicon-django-plain';
+  if (n.includes('flask')) return 'devicon-flask-original';
+  if (n.includes('spring')) return 'devicon-spring-plain';
+  if (n.includes('ruby') || n.includes('rails')) return 'devicon-ruby-plain';
+  if (n.includes('express')) return 'devicon-express-original';
+  if (n.includes('nestjs')) return 'devicon-nestjs-plain';
+  if (n.includes('laravel')) return 'devicon-laravel-plain';
+  if (n.includes('go ')) return 'devicon-go-original-wordmark';
+  if (n.includes('rust')) return 'devicon-rust-plain';
+  if (n.includes('postgres')) return 'devicon-postgresql-plain';
+  if (n.includes('mysql')) return 'devicon-mysql-plain';
+  if (n.includes('mongo')) return 'devicon-mongodb-plain';
+  if (n.includes('redis')) return 'devicon-redis-plain';
+  if (n.includes('sqlite')) return 'devicon-sqlite-plain';
+  if (n.includes('oracle')) return 'devicon-oracle-original';
+  if (n.includes('docker')) return 'devicon-docker-plain';
+  if (n.includes('kubernetes')) return 'devicon-kubernetes-plain';
+  if (n.includes('aws') || n.includes('amazon') || n.includes('ec2') || n.includes('s3')) return 'devicon-amazonwebservices-original';
+  if (n.includes('google cloud')) return 'devicon-googlecloud-plain';
+  if (n.includes('azure')) return 'devicon-azure-plain';
+  if (n.includes('terraform')) return 'devicon-terraform-plain';
+  if (n.includes('ansible')) return 'devicon-ansible-plain';
+  if (n.includes('jenkins')) return 'devicon-jenkins-line';
+  if (n.includes('github') || n.includes('actions')) return 'devicon-github-original';
+  if (n.includes('gitlab')) return 'devicon-gitlab-plain';
+  if (n.includes('nginx')) return 'devicon-nginx-original';
+  if (n.includes('apache')) return 'devicon-apache-plain';
+  if (n.includes('prometheus')) return 'devicon-prometheus-original';
+  if (n.includes('grafana')) return 'devicon-grafana-original';
+  if (n.includes('splunk')) return 'devicon-splunk-original';
+  if (n.includes('flutter')) return 'devicon-flutter-plain';
+  if (n.includes('swift')) return 'devicon-swift-plain';
+  if (n.includes('kotlin')) return 'devicon-kotlin-plain';
+  if (n.includes('ionic')) return 'devicon-ionic-original';
+  if (n.includes('tensorflow')) return 'devicon-tensorflow-original';
+  if (n.includes('pytorch')) return 'devicon-pytorch-original';
+  if (n.includes('pandas')) return 'devicon-pandas-original';
+  if (n.includes('numpy')) return 'devicon-numpy-original';
+  if (n.includes('opencv')) return 'devicon-opencv-plain';
+  if (n.includes('java')) return 'devicon-java-plain';
+  if (n.includes('c++')) return 'devicon-cplusplus-plain';
+  if (n.includes('c#')) return 'devicon-csharp-plain';
+  if (n.includes('php')) return 'devicon-php-plain';
+  if (n.includes('dart')) return 'devicon-dart-plain';
+  if (n.includes('haskell')) return 'devicon-haskell-plain';
+  if (n.includes('lua')) return 'devicon-lua-plain';
+  if (n.includes('bash') || n.includes('shell')) return 'devicon-bash-plain';
+  
+  // Generic fallback parsing
+  const firstWord = n.split(' ')[0].replace('.', '');
+  return `devicon-${firstWord}-plain`;
+};
+
+
 export default function Sidebar({ onOpenRawScript }: { onOpenRawScript: () => void }) {
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -123,10 +196,10 @@ export default function Sidebar({ onOpenRawScript }: { onOpenRawScript: () => vo
                     onDragStart={(event) => onDragStart(event, 'custom', comp)} 
                     draggable 
                     style={{ 
-                      display: 'flex', alignItems: 'center', gap: '8px',
-                      padding: '8px 10px', background: 'transparent', 
+                      display: 'flex', alignItems: 'center', gap: '10px',
+                      padding: '8px 12px', background: 'transparent', 
                       border: '1px solid #3c3c3c', borderRadius: '4px', 
-                      cursor: 'grab', fontSize: '13px', color: '#cccccc', transition: 'all 0.2s',
+                      cursor: 'grab', fontSize: '13px', color: '#d4d4d4', transition: 'all 0.2s',
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.background = '#2a2d2e';
@@ -137,7 +210,7 @@ export default function Sidebar({ onOpenRawScript }: { onOpenRawScript: () => vo
                       e.currentTarget.style.borderColor = '#3c3c3c';
                     }}
                   >
-                    <Box size={14} color="#007acc" />
+                    <i className={`${getDeviconClass(comp)} colored`} style={{ fontSize: '16px' }}></i>
                     {comp}
                   </div>
                 ))}
