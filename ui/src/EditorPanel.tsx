@@ -96,7 +96,7 @@ export default function EditorPanel({ nodeId, nodeLabel, onClose, onCodeRun }: E
   // Seed code based on the dragged component label
   useEffect(() => {
     if (!nodeId) return;
-    const template = BOILERPLATES[nodeLabel] || \`// Welcome to \${nodeLabel}\\n\\n// Write your logic or configuration here.\\n\`;
+    const template = BOILERPLATES[nodeLabel] || `// Welcome to ${nodeLabel}\n\n// Write your logic or configuration here.\n`;
     setCode(template);
   }, [nodeId, nodeLabel]);
 
@@ -139,7 +139,7 @@ export default function EditorPanel({ nodeId, nodeLabel, onClose, onCodeRun }: E
       position: 'absolute',
       right: 0,
       top: 0,
-      width: \`\${width}px\`,
+      width: `${width}px`,
       height: '100%',
       background: '#1e1e1e',
       display: 'flex',

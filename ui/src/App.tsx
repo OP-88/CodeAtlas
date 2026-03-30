@@ -22,7 +22,7 @@ const initialNodes = [
 ];
 
 let id = 0;
-const getId = () => \`node_\${id++}\`;
+const getId = () => `node_${id++}`;
 
 function Flowboard() {
   const reactFlowWrapper = useRef<HTMLDivElement>(null);
@@ -133,8 +133,8 @@ function Flowboard() {
       if (node.id === nodeId) {
         node.style = { 
           ...node.style, 
-          border: \`2px solid \${color}\`,
-          boxShadow: \`0 0 15px \${color}50\` 
+          border: `2px solid ${color}`,
+          boxShadow: `0 0 15px ${color}50`
         };
       }
       return node;
