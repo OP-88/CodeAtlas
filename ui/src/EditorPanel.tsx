@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import Editor, { loader } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
-import { X, Play } from 'lucide-react';
+import { X, Play, Save, CheckCircle, TerminalSquare } from 'lucide-react';
 
 // Configure Monaco to load entirely from local installation to bypass "Loading..." CDN blockage
 loader.config({ monaco });
@@ -93,6 +93,35 @@ export default function EditorPanel({ nodeId, nodeLabel, onClose, onCodeRun }: E
   const [isHoveringResizer, setIsHoveringResizer] = useState(false);
   const isResizing = useRef(false);
   const [validationResult, setValidationResult] = useState<{ status: 'idle' | 'success' | 'error', message: string }>({ status: 'idle', message: '' });
+
+  // Terminal UI State
+  const [activeTab, setActiveTab] = useState<'output' | 'terminal'>('output');
+  const [terminalLines, setTerminalLines] = useState<string[]>(['CodeAtlas Local Shell (Bash) - Engine hooked.', 'Type a command and press Enter...']);
+  const [terminalInput, setTerminalInput] = useState('');
+
+  const handleTerminalSubmit = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter' && terminalInput.trim()) {
+      const cmd = terminalInput.trim();
+      setTerminalLines(prev => [...prev, `$ ${cmd}`]);
+      setTerminalInput('');
+      
+      if (cmd === 'clear') {
+         setTerminalLines([]);
+         return;
+      }
+
+      try {
+        const cp = (window as any).require('child_process');
+        cp.exec(cmd, { cwd: '/home/marc/Verba-mvp/CodeAtlas/ui' }, (error: any, stdout: string, stderr: string) => {
+          if (stdout) setTerminalLines(prev => [...prev, ...stdout.trim().split('\n')]);
+          if (stderr) setTerminalLines(prev => [...prev, ...stderr.trim().split('\n')]);
+          if (error) setTerminalLines(prev => [...prev, `[Process exited with code ${error.code}]`]);
+        });
+      } catch (err) {
+        setTerminalLines(prev => [...prev, 'Error: Local terminal execution requires native application context.']);
+      }
+    }
+  };
 
   // Reset console output when node switching
   useEffect(() => {
@@ -186,27 +215,43 @@ export default function EditorPanel({ nodeId, nodeLabel, onClose, onCodeRun }: E
         }}
       />
       
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 20px 12px 25px', background: '#252526', borderBottom: '1px solid #333', color: '#eaeaea' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <h3 style={{ margin: 0, fontSize: '14px', fontWeight: 600, letterSpacing: '0.02em' }}>{nodeLabel}</h3>
-          <span style={{ fontSize: '11px', color: '#666', background: '#1e1e1e', padding: '2px 6px', borderRadius: '4px', textTransform: 'uppercase' }}>{language}</span>
+      {/* VS Code Style Header/Toolbar */}
+      <div style={{ display: 'flex', flexDirection: 'column', background: '#252526', borderBottom: '1px solid #333', color: '#eaeaea' }}>
+        {/* Title Bar */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '8px 15px 8px 20px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <h3 style={{ margin: 0, fontSize: '13px', fontWeight: 600, letterSpacing: '0.02em', color: '#ccc' }}>{nodeLabel} <span style={{ color: '#666', fontWeight: 400 }}>— CodeAtlas Engine</span></h3>
+            <span style={{ fontSize: '10px', color: '#888', background: '#1e1e1e', padding: '2px 6px', borderRadius: '3px', textTransform: 'uppercase', border: '1px solid #333' }}>{language}</span>
+          </div>
+          <button onClick={onClose} style={{ background: 'transparent', border: 'none', color: '#888', cursor: 'pointer', padding: '2px', display: 'flex', alignItems: 'center' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#888'}>
+            <X size={16} />
+          </button>
         </div>
-        <div style={{ display: 'flex', gap: '10px' }}>
+        
+        {/* Toolbar */}
+        <div style={{ display: 'flex', alignItems: 'center', padding: '6px 20px 8px 20px', gap: '10px' }}>
           <button 
-            onClick={handleValidate}
-            style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#0e639c', color: 'white', border: '1px solid transparent', padding: '5px 14px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px', transition: 'background 0.2s' }}
+            onClick={() => { setActiveTab('output'); handleValidate(); }}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#0e639c', color: 'white', border: '1px solid #1177bb', padding: '4px 12px', borderRadius: '3px', cursor: 'pointer', fontSize: '12px', transition: 'background 0.2s' }}
             onMouseEnter={(e) => e.currentTarget.style.background = '#1177bb'}
             onMouseLeave={(e) => e.currentTarget.style.background = '#0e639c'}
           >
-            <Play size={14} /> Validate
+            <Play size={14} /> Validate AST
           </button>
           <button 
-            onClick={onClose} 
-            style={{ background: 'transparent', border: 'none', color: '#888', cursor: 'pointer', padding: '2px', display: 'flex', alignItems: 'center' }}
-            onMouseEnter={(e) => e.currentTarget.style.color = '#fff'}
-            onMouseLeave={(e) => e.currentTarget.style.color = '#888'}
+            onClick={() => setActiveTab('terminal')}
+            style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#333333', color: '#ccc', border: '1px solid #444', padding: '4px 12px', borderRadius: '3px', cursor: 'pointer', fontSize: '12px', transition: 'background 0.2s' }}
+            onMouseEnter={(e) => e.currentTarget.style.background = '#444'}
+            onMouseLeave={(e) => e.currentTarget.style.background = '#333'}
           >
-            <X size={18} />
+            <TerminalSquare size={14} /> Local Bash
+          </button>
+          <div style={{ flex: 1 }} />
+          <button style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'transparent', color: '#aaa', border: '1px solid transparent', padding: '4px 8px', borderRadius: '3px', cursor: 'pointer', fontSize: '12px' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#aaa'}>
+            <CheckCircle size={14} /> Format
+          </button>
+          <button style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'transparent', color: '#aaa', border: '1px solid transparent', padding: '4px 8px', borderRadius: '3px', cursor: 'pointer', fontSize: '12px' }} onMouseEnter={(e) => e.currentTarget.style.color = '#fff'} onMouseLeave={(e) => e.currentTarget.style.color = '#aaa'}>
+            <Save size={14} /> Save
           </button>
         </div>
       </div>
@@ -257,31 +302,80 @@ export default function EditorPanel({ nodeId, nodeLabel, onClose, onCodeRun }: E
         />
       </div>
 
-      {/* Terminal / Output View */}
-      {validationResult.status !== 'idle' && (
-        <div style={{
-          height: '140px',
-          minHeight: '140px',
-          background: '#181818',
-          borderTop: '1px solid #333',
-          padding: '12px 15px',
-          color: validationResult.status === 'error' ? '#ef4444' : '#10b981',
-          fontFamily: 'monospace',
-          fontSize: '12px',
-          overflowY: 'auto',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '8px',
-          boxShadow: 'inset 0 4px 10px rgba(0,0,0,0.3)'
-        }}>
-          <div style={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid #333', paddingBottom: '6px', textTransform: 'uppercase' }}>
-            {validationResult.status === 'error' ? '❌ ENGINE_BUILD_FAILED' : '✅ ENGINE_BUILD_SUCCESS'}
-          </div>
-          <div style={{ color: '#d4d4d4', lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>
-            <span style={{ color: '#569cd6' }}>[compiler] </span> {validationResult.message}
-          </div>
+      {/* VS Code Style Bottom Panel (Tabs + Content) */}
+      <div style={{
+        height: '240px',
+        minHeight: '240px',
+        background: '#181818',
+        borderTop: '1px solid #333',
+        display: 'flex',
+        flexDirection: 'column',
+        boxShadow: 'inset 0 4px 10px rgba(0,0,0,0.3)',
+        zIndex: 10
+      }}>
+        {/* Tab Headers */}
+        <div style={{ display: 'flex', borderBottom: '1px solid #333', padding: '0 10px', background: '#1e1e1e' }}>
+          <button 
+            onClick={() => setActiveTab('output')}
+            style={{ background: 'transparent', border: 'none', padding: '8px 15px', color: activeTab === 'output' ? '#e5e5e5' : '#858585', fontSize: '11px', textTransform: 'uppercase', cursor: 'pointer', borderBottom: activeTab === 'output' ? '1px solid #007acc' : '1px solid transparent', transition: 'all 0.2s', outline: 'none' }}
+          >
+            Output
+          </button>
+          <button 
+            onClick={() => setActiveTab('terminal')}
+            style={{ background: 'transparent', border: 'none', padding: '8px 15px', color: activeTab === 'terminal' ? '#e5e5e5' : '#858585', fontSize: '11px', textTransform: 'uppercase', cursor: 'pointer', borderBottom: activeTab === 'terminal' ? '1px solid #007acc' : '1px solid transparent', transition: 'all 0.2s', outline: 'none' }}
+          >
+            Terminal
+          </button>
         </div>
-      )}
+
+        {/* Output Tab Content */}
+        {activeTab === 'output' && (
+          <div style={{ padding: '12px 15px', overflowY: 'auto', flex: 1, fontFamily: 'monospace', fontSize: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            {validationResult.status === 'idle' ? (
+              <span style={{ color: '#666' }}>No execution output to display. Click 'Validate AST' to run simulated architecture verification.</span>
+            ) : (
+              <>
+                <div style={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', paddingBottom: '6px', color: validationResult.status === 'error' ? '#ef4444' : '#10b981' }}>
+                  {validationResult.status === 'error' ? '❌ ENGINE_BUILD_FAILED' : '✅ ENGINE_BUILD_SUCCESS'}
+                </div>
+                <div style={{ color: '#d4d4d4', lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>
+                  <span style={{ color: '#569cd6' }}>[compiler] </span> {validationResult.message}
+                </div>
+              </>
+            )}
+          </div>
+        )}
+
+        {/* Terminal Tab Content */}
+        {activeTab === 'terminal' && (
+          <div 
+            style={{ padding: '10px 15px', overflowY: 'auto', flex: 1, fontFamily: 'monospace', fontSize: '13px', display: 'flex', flexDirection: 'column', gap: '4px' }}
+            onClick={(e) => {
+              const input = e.currentTarget.querySelector('input');
+              if (input) input.focus();
+            }}
+          >
+            {terminalLines.map((line, idx) => (
+              <div key={idx} style={{ color: line.startsWith('$') ? '#569cd6' : line.toLowerCase().includes('error') ? '#ef4444' : '#cccccc', whiteSpace: 'pre-wrap', lineHeight: 1.4 }}>
+                {line}
+              </div>
+            ))}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '6px' }}>
+              <span style={{ color: '#10b981', fontWeight: 'bold' }}>marc@codeatlas-shell:~$</span>
+              <input 
+                type="text" 
+                value={terminalInput}
+                onChange={(e) => setTerminalInput(e.target.value)}
+                onKeyDown={handleTerminalSubmit}
+                style={{ background: 'transparent', border: 'none', color: '#cccccc', flex: 1, outline: 'none', fontFamily: 'monospace', fontSize: '13px' }}
+                autoFocus
+                placeholder="npm -v"
+              />
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
