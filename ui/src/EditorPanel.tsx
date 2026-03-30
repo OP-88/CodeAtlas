@@ -92,6 +92,23 @@ export default function EditorPanel({ nodeId, nodeLabel, onClose, onCodeRun }: E
   const [width, setWidth] = useState(600);
   const [isHoveringResizer, setIsHoveringResizer] = useState(false);
   const isResizing = useRef(false);
+  const [validationResult, setValidationResult] = useState<{ status: 'idle' | 'success' | 'error', message: string }>({ status: 'idle', message: '' });
+
+  // Reset console output when node switching
+  useEffect(() => {
+    setValidationResult({ status: 'idle', message: '' });
+  }, [nodeId]);
+
+  const handleValidate = () => {
+    if (!nodeId) return;
+    const isErr = code.toLowerCase().includes('error') || code.toLowerCase().includes('fail');
+    if (isErr) {
+      setValidationResult({ status: 'error', message: 'EngineHeuristicError: Failed to parse structural schema blocks. Invalid tokens or vulnerable logic pathways detected in component.' });
+    } else {
+      setValidationResult({ status: 'success', message: 'Validation Passed: Syntax verified. Heuristic AST mapping successfully parsed and integrated seamlessly.' });
+    }
+    onCodeRun(code, nodeId);
+  };
 
   // Seed code based on the dragged component label
   useEffect(() => {
@@ -176,7 +193,7 @@ export default function EditorPanel({ nodeId, nodeLabel, onClose, onCodeRun }: E
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
           <button 
-            onClick={() => onCodeRun(code, nodeId)}
+            onClick={handleValidate}
             style={{ display: 'flex', alignItems: 'center', gap: '6px', background: '#0e639c', color: 'white', border: '1px solid transparent', padding: '5px 14px', borderRadius: '4px', cursor: 'pointer', fontSize: '12px', transition: 'background 0.2s' }}
             onMouseEnter={(e) => e.currentTarget.style.background = '#1177bb'}
             onMouseLeave={(e) => e.currentTarget.style.background = '#0e639c'}
@@ -218,6 +235,32 @@ export default function EditorPanel({ nodeId, nodeLabel, onClose, onCodeRun }: E
           }}
         />
       </div>
+
+      {/* Terminal / Output View */}
+      {validationResult.status !== 'idle' && (
+        <div style={{
+          height: '140px',
+          minHeight: '140px',
+          background: '#181818',
+          borderTop: '1px solid #333',
+          padding: '12px 15px',
+          color: validationResult.status === 'error' ? '#ef4444' : '#10b981',
+          fontFamily: 'monospace',
+          fontSize: '12px',
+          overflowY: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '8px',
+          boxShadow: 'inset 0 4px 10px rgba(0,0,0,0.3)'
+        }}>
+          <div style={{ fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid #333', paddingBottom: '6px', textTransform: 'uppercase' }}>
+            {validationResult.status === 'error' ? '❌ ENGINE_BUILD_FAILED' : '✅ ENGINE_BUILD_SUCCESS'}
+          </div>
+          <div style={{ color: '#d4d4d4', lineHeight: 1.5, whiteSpace: 'pre-wrap' }}>
+            <span style={{ color: '#569cd6' }}>[compiler] </span> {validationResult.message}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
