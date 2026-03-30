@@ -50,9 +50,27 @@ export default function Sidebar() {
       flexDirection: 'column', 
       gap: '12px' 
     }}>
-      <h3 style={{ margin: '5px 5px 15px', fontSize: '13px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#858585' }}>
-        Component Library
-      </h3>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+        <h3 style={{ margin: '5px 5px', fontSize: '13px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#858585' }}>
+          Component Library
+        </h3>
+      </div>
+
+      <div 
+        onDragStart={(event) => onDragStart(event, 'custom', 'Raw Script Ingestion')} 
+        draggable 
+        style={{ 
+          display: 'flex', alignItems: 'center', gap: '10px',
+          padding: '10px 12px', background: '#0e639c', 
+          border: '1px solid #1177bb', borderRadius: '4px', 
+          cursor: 'grab', fontSize: '13px', fontWeight: 'bold', color: 'white', transition: 'background 0.2s', marginBottom: '10px' 
+        }}
+        onMouseEnter={(e) => e.currentTarget.style.background = '#1177bb'}
+        onMouseLeave={(e) => e.currentTarget.style.background = '#0e639c'}
+      >
+        <span style={{ fontSize: '16px', lineHeight: 1 }}>{'</>'}</span>
+        <span>Raw Script Engine</span>
+      </div>
       
       {['Frontend', 'Backend', 'Databases', 'Infrastructure', 'Security'].map(group => (
         <div key={group} style={{ marginBottom: '10px' }}>

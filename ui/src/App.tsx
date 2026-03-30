@@ -191,10 +191,10 @@ function Flowboard() {
           onPaneContextMenu={onPaneContextMenu}
           proOptions={{ hideAttribution: true }}
           colorMode="dark"
+          panActivationKeyCode={null}
           fitView
         >
           <Controls />
-          <MiniMap style={{ background: '#1e1e1e', maskColor: '#252526' }} nodeColor="#444" />
           <Background 
             variant={BackgroundVariant.Lines} 
             gap={30} 
