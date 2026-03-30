@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+websockets
+networkx
+tree-sitter
+python-multipart

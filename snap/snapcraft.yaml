@@ -1,0 +1,56 @@
+name: codeatlas
+base: core22
+version: "0.1.0"
+summary: The Intelligent Cartography Engine for Code
+description: |
+  CodeAtlas is a local-first, privacy-centric desktop application
+  acting as an architectural drawing board and static analysis simulator.
+grade: devel
+confinement: strict
+
+apps:
+  codeatlas:
+    command: codeatlas-launcher
+    extensions: [gnome]
+    plugs:
+      - home
+      - network
+      - network-bind
+
+parts:
+  engine:
+    plugin: python
+    source: engine/
+    python-packages:
+      - fastapi
+      - uvicorn
+      - websockets
+      - networkx
+      - tree-sitter
+      - python-multipart
+
+  ui:
+    plugin: npm
+    source: ui/
+    npm-node-version: 18.19.0
+    override-build: |
+      npm install
+      npm run build
+      cp -r dist $CRAFT_PART_INSTALL/
+      cp -r electron $CRAFT_PART_INSTALL/
+      cp package.json $CRAFT_PART_INSTALL/
+
+  launcher:
+    plugin: dump
+    source: .
+    override-build: |
+      mkdir -p $CRAFT_PART_INSTALL/bin
+      cat > $CRAFT_PART_INSTALL/bin/codeatlas-launcher << 'EOF'
+      #!/bin/bash
+      # Start the Python engine in the background
+      export PYTHONPATH=$SNAP/lib/python3.10/site-packages
+      $SNAP/bin/python3 $SNAP/engine/main.py &
+      # Start Electron frontend
+      exec electron $SNAP/ui/electron/main.js
+      EOF
+      chmod +x $CRAFT_PART_INSTALL/bin/codeatlas-launcher
