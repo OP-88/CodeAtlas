@@ -171,9 +171,7 @@ function Flowboard() {
       <div 
         style={{ 
           flexGrow: 1, 
-          position: 'relative',
-          maskImage: 'radial-gradient(circle at center, black 40%, transparent 100%)',
-          WebkitMaskImage: 'radial-gradient(circle at center, black 40%, transparent 100%)'
+          position: 'relative'
         }} 
         ref={reactFlowWrapper}
       >
@@ -196,7 +194,16 @@ function Flowboard() {
         >
           <Controls />
           <MiniMap style={{ background: '#1e1e1e', maskColor: '#252526' }} nodeColor="#444" />
-          <Background variant={BackgroundVariant.Lines} gap={30} size={1} color="#2a2a2a" />
+          <Background 
+            variant={BackgroundVariant.Lines} 
+            gap={30} 
+            size={1} 
+            color="#2a2a2a" 
+            style={{
+              maskImage: 'radial-gradient(circle at center, black 40%, transparent 100%)',
+              WebkitMaskImage: 'radial-gradient(circle at center, black 40%, transparent 100%)'
+            }}
+          />
         </ReactFlow>
 
         {/* Custom Context Menu */}
@@ -206,7 +213,7 @@ function Flowboard() {
               position: 'fixed', 
               top: menu.y, 
               left: menu.x, 
-              zIndex: 9999, 
+              zIndex: 99999, 
               background: '#252526', 
               border: '1px solid #454545',
               boxShadow: '0 4px 12px rgba(0,0,0,0.5)',
