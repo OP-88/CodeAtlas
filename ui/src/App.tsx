@@ -112,9 +112,17 @@ function Flowboard() {
   };
 
   return (
-    <div style={{ width: '100vw', height: '100vh', display: 'flex', flexDirection: 'row', background: '#1a1a1a' }}>
+    <div style={{ width: '100%', height: '100vh', display: 'flex', flexDirection: 'row', background: '#121212', overflow: 'hidden' }}>
       <Sidebar />
-      <div style={{ flexGrow: 1, position: 'relative' }} ref={reactFlowWrapper}>
+      <div 
+        style={{ 
+          flexGrow: 1, 
+          position: 'relative',
+          maskImage: 'radial-gradient(circle at center, black 40%, transparent 100%)',
+          WebkitMaskImage: 'radial-gradient(circle at center, black 40%, transparent 100%)'
+        }} 
+        ref={reactFlowWrapper}
+      >
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -130,7 +138,7 @@ function Flowboard() {
         >
           <Controls />
           <MiniMap style={{ background: '#1e1e1e', maskColor: '#252526' }} nodeColor="#444" />
-          <Background variant={BackgroundVariant.Dots} gap={16} size={1} color="#333" />
+          <Background variant={BackgroundVariant.Lines} gap={30} size={1} color="#2a2a2a" />
         </ReactFlow>
 
         {/* The double-click IDE Panel */}
