@@ -12,6 +12,7 @@ apps:
   codeatlas:
     command: codeatlas-launcher
     extensions: [gnome]
+    common-id: com.github.op88.codeatlas
     plugs:
       - home
       - network
