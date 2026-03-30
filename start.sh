@@ -7,13 +7,17 @@ pip install -r requirements.txt
 python3 main.py &
 ENGINE_PID=$!
 
-echo "Starting CodeAtlas UI..."
+echo "Building CodeAtlas UI..."
 cd ../ui
 npm install
-npm install @xyflow/react lucide-react electron electron-builder concurrently --save-dev
 
-# Start vite server in background, and Electron in foreground
-npx concurrently -k "npm run dev" "sleep 3 && npx electron electron/main.js" &
+# Build the static files (removes need for localhost:5173)
+npm run build
+
+echo "Launching Standalone Application..."
+# Run Electron in production mode so it loads the compiled files directly from disk
+export NODE_ENV=production
+npx electron electron/main.cjs &
 UI_PID=$!
 
 function cleanup() {

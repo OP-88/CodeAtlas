@@ -1,0 +1,4 @@
+Traceback (most recent call last):
+  File "/home/marc/Verba-mvp/CodeAtlas/engine/main.py", line 5, in <module>
+    from engine.graph_manager import GraphManager
+ModuleNotFoundError: No module named 'engine'

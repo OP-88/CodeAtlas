@@ -52,6 +52,6 @@ parts:
       export PYTHONPATH=$SNAP/lib/python3.10/site-packages
       $SNAP/bin/python3 $SNAP/engine/main.py &
       # Start Electron frontend
-      exec electron $SNAP/ui/electron/main.js
+      exec electron $SNAP/ui/electron/main.cjs
       EOF
       chmod +x $CRAFT_PART_INSTALL/bin/codeatlas-launcher
