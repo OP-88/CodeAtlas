@@ -54,15 +54,15 @@ app.whenReady().then(() => {
     {
       label: 'Edit',
       submenu: [
-        { role: 'undo' },
-        { role: 'redo' },
+        { role: 'undo', accelerator: 'CmdOrCtrl+Z' },
+        { role: 'redo', accelerator: 'CmdOrCtrl+Y' },
         { type: 'separator' },
-        { role: 'cut' },
-        { role: 'copy' },
-        { role: 'paste' },
-        { role: 'pasteAndMatchStyle' },
+        { role: 'cut', accelerator: 'CmdOrCtrl+X' },
+        { role: 'copy', accelerator: 'CmdOrCtrl+C' },
+        { role: 'paste', accelerator: 'CmdOrCtrl+V' },
+        { role: 'pasteAndMatchStyle', accelerator: 'CmdOrCtrl+Shift+V' },
         { role: 'delete' },
-        { role: 'selectAll' }
+        { role: 'selectAll', accelerator: 'CmdOrCtrl+A' }
       ]
     },
     {
@@ -85,6 +85,10 @@ app.whenReady().then(() => {
   Menu.setApplicationMenu(menu);
 
   createWindow();
+
+  // Grant unfettered async clipboard API access to the Monaco Editor
+  mainWindow.webContents.session.setPermissionCheckHandler(() => true);
+  mainWindow.webContents.session.setPermissionRequestHandler((webContents, permission, callback) => callback(true));
 
   app.on('activate', function () {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
