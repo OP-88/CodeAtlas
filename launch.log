@@ -67,3 +67,13 @@ Launching Standalone Application...
 CodeAtlas is running. Press Ctrl+C to stop.
 (node:143002) electron: Failed to load URL: file:///home/marc/Verba-mvp/CodeAtlas/ui/dist/index.html with error: ERR_FILE_NOT_FOUND
 (Use `electron --trace-warnings ...` to show where the warning was created)
+[143002:0330/210236.523794:ERROR:content/browser/network_service_instance_impl.cc:608] Network service crashed or was terminated, restarting service.
+[143002:0330/210236.529403:ERROR:content/common/zygote/zygote_communication_linux.cc:291] Failed to send GetTerminationStatus message to zygote
+[143002:0330/210236.531235:ERROR:content/browser/gpu/gpu_process_host.cc:990] GPU process launch failed: error_code=1002
+[143002:0330/210236.533060:ERROR:content/browser/gpu/gpu_process_host.cc:990] GPU process launch failed: error_code=1002
+[143002:0330/210236.533784:ERROR:content/browser/gpu/gpu_process_host.cc:990] GPU process launch failed: error_code=1002
+[143002:0330/210236.534501:ERROR:content/browser/gpu/gpu_process_host.cc:990] GPU process launch failed: error_code=1002
+[143002:0330/210236.535097:ERROR:content/browser/gpu/gpu_process_host.cc:990] GPU process launch failed: error_code=1002
+[143002:0330/210236.535637:ERROR:content/browser/gpu/gpu_process_host.cc:990] GPU process launch failed: error_code=1002
+[143002:0330/210236.535662:FATAL:content/browser/gpu/gpu_data_manager_impl_private.cc:417] GPU process isn't usable. Goodbye.
+/home/marc/Verba-mvp/CodeAtlas/ui/node_modules/electron/dist/electron exited with signal SIGTRAP

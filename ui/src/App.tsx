@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState, useEffect } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { nanoid } from 'nanoid';
 import {
   ReactFlow,
@@ -9,6 +9,7 @@ import {
   useEdgesState,
   addEdge,
   ReactFlowProvider,
+  BackgroundVariant
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 
@@ -20,27 +21,27 @@ const initialNodes = [
 ];
 
 let id = 0;
-const getId = () => `dndnode_${id++}`;
+const getId = () => `node_${id++}`;
 
 function Flowboard() {
-  const reactFlowWrapper = useRef(null);
+  const reactFlowWrapper = useRef<HTMLDivElement>(null);
   const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
   const [edges, setEdges, onEdgesChange] = useEdgesState([]);
-  const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const [reactFlowInstance, setReactFlowInstance] = useState<any>(null);
 
   // Editor State
   const [activeNodeId, setActiveNodeId] = useState<string | null>(null);
   const [activeNodeLabel, setActiveNodeLabel] = useState('');
 
-  const onConnect = useCallback((params) => setEdges((eds) => addEdge(params, eds)), []);
+  const onConnect = useCallback((params: any) => setEdges((eds) => addEdge(params, eds)), []);
 
-  const onDragOver = useCallback((event) => {
+  const onDragOver = useCallback((event: any) => {
     event.preventDefault();
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
   const onDrop = useCallback(
-    (event) => {
+    (event: any) => {
       event.preventDefault();
 
       const type = event.dataTransfer.getData('application/reactflow');
@@ -57,9 +58,18 @@ function Flowboard() {
 
       const newNode = {
         id: getId(),
-        type: 'default', // Using default node type for MVP
+        type: 'default',
         position,
         data: { label: label },
+        style: {
+          background: '#252526',
+          color: 'white',
+          border: '1px solid #3c3c3c',
+          borderRadius: '6px',
+          width: 160,
+          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.5)',
+          fontSize: '13px'
+        }
       };
 
       setNodes((nds) => nds.concat(newNode));
@@ -67,16 +77,38 @@ function Flowboard() {
     [reactFlowInstance],
   );
 
-  const onNodeDoubleClick = useCallback((event, node) => {
+  const onNodeDoubleClick = useCallback((event: any, node: any) => {
     setActiveNodeId(node.id);
     setActiveNodeLabel(node.data.label);
   }, []);
 
   const handleCodeRun = (code: string, nodeId: string) => {
-    console.log("Simulating Validation for Node: ", nodeId);
-    console.log("Code snippet: ", code);
-    // In a real scenario, this is sent down via WebSockets to the Python Engine
-    alert(`Engine Validation Triggered for ${activeNodeLabel}:\nStatic Analysis heuristics are running...`);
+    // Simulate static analysis evaluation
+    const isError = code.toLowerCase().includes('error') || code.toLowerCase().includes('fail');
+    const color = isError ? '#ef4444' : '#10b981'; // Red for error, Green for success
+
+    setEdges((eds) =>
+      eds.map((edge) => {
+        if (edge.source === nodeId || edge.target === nodeId) {
+          edge.animated = !isError; // animate if success
+          edge.style = { ...edge.style, stroke: color, strokeWidth: 2 };
+        }
+        return edge;
+      })
+    );
+    
+    setNodes((nds) => 
+      nds.map((node) => {
+        if (node.id === nodeId) {
+          node.style = { 
+            ...node.style, 
+            border: `2px solid ${color}`,
+            boxShadow: `0 0 15px ${color}40` 
+          };
+        }
+        return node;
+      })
+    );
   };
 
   return (
@@ -97,8 +129,8 @@ function Flowboard() {
           fitView
         >
           <Controls />
-          <MiniMap />
-          <Background variant="dots" gap={12} size={1} />
+          <MiniMap style={{ background: '#1e1e1e', maskColor: '#252526' }} nodeColor="#444" />
+          <Background variant={BackgroundVariant.Dots} gap={16} size={1} color="#333" />
         </ReactFlow>
 
         {/* The double-click IDE Panel */}
