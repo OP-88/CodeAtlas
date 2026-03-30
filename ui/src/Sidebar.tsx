@@ -38,7 +38,9 @@ export default function Sidebar() {
 
   return (
     <aside style={{ 
-      width: '260px', 
+      width: '260px',
+      minWidth: '260px',
+      flexShrink: 0,
       background: '#1e1e1e', 
       borderRight: '1px solid #333', 
       padding: '15px 10px', 
