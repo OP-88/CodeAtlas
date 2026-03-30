@@ -208,7 +208,13 @@ export default function EditorPanel({ nodeId, nodeLabel, onClose, onCodeRun }: E
             scrollBeyondLastLine: false,
             smoothScrolling: true,
             cursorBlinking: 'smooth',
-            padding: { top: 15 }
+            padding: { top: 15 },
+            tabCompletion: "on",
+            quickSuggestions: { other: true, comments: true, strings: true },
+            suggestOnTriggerCharacters: true,
+            acceptSuggestionOnEnter: "smart",
+            acceptSuggestionOnCommitCharacter: true,
+            wordBasedSuggestions: "currentDocument"
           }}
         />
       </div>

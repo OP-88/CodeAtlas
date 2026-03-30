@@ -189,6 +189,7 @@ function Flowboard() {
           onNodeContextMenu={onNodeContextMenu}
           onEdgeContextMenu={onEdgeContextMenu}
           onPaneContextMenu={onPaneContextMenu}
+          proOptions={{ hideAttribution: true }}
           colorMode="dark"
           fitView
         >
