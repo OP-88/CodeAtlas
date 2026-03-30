@@ -1,15 +1,26 @@
-html, body, #root {
-  margin: 0;
-  padding: 0;
-  width: 100vw;
-  height: 100vh;
-  overflow: hidden;
-  position: relative;
-  background-color: #121212;
-  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  color-scheme: dark;
+html, body {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  overflow: hidden !important;
+  background-color: #121212 !important;
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif !important;
+  color-scheme: dark !important;
+  display: block !important;
+}
+
+#root {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  max-width: none !important;
+  overflow: hidden !important;
+  text-align: left !important;
+  display: block !important;
 }
 
 * {
-  box-sizing: border-box;
+  box-sizing: border-box !important;
 }
