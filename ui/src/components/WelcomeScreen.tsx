@@ -73,7 +73,7 @@ export default function WelcomeScreen() {
             src="./codeatlas_icon.png"
             alt="CodeAtlas Logo"
             style={{
-              width: '54px', height: '54px',
+              width: '80px', height: '80px',
               filter: 'drop-shadow(0 0 20px rgba(0,122,204,0.3))'
             }}
           />

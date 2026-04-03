@@ -24,7 +24,7 @@ Traceback (most recent call last):
     from engine.graph_manager import GraphManager
 ModuleNotFoundError: No module named 'engine'
 
-up to date, audited 535 packages in 5s
+up to date, audited 535 packages in 1s
 
 109 packages are looking for funding
   run `npm fund` for details
@@ -89,7 +89,7 @@ dist/assets/qsharp-CEz_fZTu.js                   2.72 kB │ gzip:     1.37 kB
 dist/assets/shell-M6px0EWn.js                    2.81 kB │ gzip:     1.16 kB
 dist/assets/r-CN875f1X.js                        2.83 kB │ gzip:     1.25 kB
 dist/assets/java-nqX2KEDD.js                     2.90 kB │ gzip:     1.34 kB
-dist/assets/cssMode-8WHArB9a.js                  2.98 kB │ gzip:     1.14 kB
+dist/assets/cssMode-D4lw_6bM.js                  2.98 kB │ gzip:     1.14 kB
 dist/assets/redis-BLesvTwR.js                    3.03 kB │ gzip:     1.41 kB
 dist/assets/kotlin-iQmfEFdy.js                   3.04 kB │ gzip:     1.41 kB
 dist/assets/cypher-PFHDKyaL.js                   3.04 kB │ gzip:     1.40 kB
@@ -97,7 +97,7 @@ dist/assets/powershell-C5A0QX3-.js               3.05 kB │ gzip:     1.33 kB
 dist/assets/tcl-GIGnfs89.js                      3.27 kB │ gzip:     1.32 kB
 dist/assets/liquid-CIbKFFfv.js                   3.34 kB │ gzip:     1.42 kB
 dist/assets/coffee-B0FZSSpt.js                   3.36 kB │ gzip:     1.24 kB
-dist/assets/htmlMode-Dg4xCf7d.js                 3.43 kB │ gzip:     1.25 kB
+dist/assets/htmlMode-BbTtUuSj.js                 3.43 kB │ gzip:     1.25 kB
 dist/assets/hcl-BQQD6Mtj.js                      3.44 kB │ gzip:     1.45 kB
 dist/assets/python-De8U7uSn.js                   3.45 kB │ gzip:     1.42 kB
 dist/assets/apex-GS4zZi0I.js                     3.46 kB │ gzip:     1.70 kB
@@ -139,23 +139,22 @@ dist/assets/elixir-xXCAglHV.js                  10.11 kB │ gzip:     2.50 kB
 dist/assets/redshift-Byf_0XqD.js                10.33 kB │ gzip:     4.24 kB
 dist/assets/abap-BRVHlTbR.js                    11.69 kB │ gzip:     5.15 kB
 dist/assets/pgsql-BXeHe33s.js                   11.91 kB │ gzip:     4.42 kB
-dist/assets/jsonMode-0AeQfDts.js                12.23 kB │ gzip:     4.46 kB
+dist/assets/jsonMode-iwXJOitY.js                12.23 kB │ gzip:     4.46 kB
 dist/assets/powerquery-CWPi8ROz.js              15.34 kB │ gzip:     4.73 kB
 dist/assets/freemarker2-DG6M7EHI.js             15.54 kB │ gzip:     3.98 kB
 dist/assets/solidity-DUWMJi-f.js                15.99 kB │ gzip:     4.39 kB
-dist/assets/tsMode-7JKPiHw9.js                  21.84 kB │ gzip:     6.14 kB
+dist/assets/tsMode-C5tmH56Z.js                  21.84 kB │ gzip:     6.14 kB
 dist/assets/lspLanguageFeatures-BNt2-S3j.js     28.25 kB │ gzip:     7.18 kB
 dist/assets/xterm-CavehEIW.js                  340.36 kB │ gzip:    86.30 kB
-dist/assets/index-D0rL5xNh.js                  537.74 kB │ gzip:   161.41 kB
+dist/assets/index-DVQ6C7Ks.js                  538.35 kB │ gzip:   161.49 kB
 dist/assets/editor.api2-HsDxDlX3.js          3,627.46 kB │ gzip:   926.82 kB
 
+✓ built in 2.93s
 [plugin builtin:vite-reporter] 
 (!) Some chunks are larger than 500 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-✓ built in 2.80s
 Launching Standalone Application...
 CodeAtlas is running. Press Ctrl+C to stop.
 [CodeAtlas] node-pty spawned: /bin/bash
-[116836:0403/173034.625073:ERROR:content/browser/browser_main_loop.cc:290] GLib-GObject: ../gobject/gsignal.c:2699: instance '0x25ac017c2ac0' has no handler with id '7948'
