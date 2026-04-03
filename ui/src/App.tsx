@@ -3,31 +3,87 @@ import ReconCanvas from './components/ReconCanvas';
 import DeconstructorCanvas from './components/DeconstructorCanvas';
 import SimulatorPanel from './components/SimulatorPanel';
 import InspectorPanel from './components/InspectorPanel';
+import WelcomeScreen from './components/WelcomeScreen';
 import Sidebar from './Sidebar';
 import { useGraphStore } from './store/useGraphStore';
+import { useEffect } from 'react';
 
 export default function App() {
-  const { activeTab } = useGraphStore();
+  const { activeTab, project, isDirty, markSaved, loadWorkspace, closeProject, newProject } = useGraphStore();
+
+  // Wire Electron IPC menu events into the React store
+  useEffect(() => {
+    const ipcRenderer = (window as any).require?.('electron')?.ipcRenderer;
+    if (!ipcRenderer) return;
+
+    // File > New Project
+    ipcRenderer.on('menu:new-project', () => {
+      if (isDirty) {
+        const ok = window.confirm('You have unsaved changes. Discard and create a new project?');
+        if (!ok) return;
+      }
+      newProject('Untitled Project');
+    });
+
+    // File > Save / Save As — main process does the actual dialog + disk write
+    ipcRenderer.on('menu:save-result', (_: any, { filePath }: { filePath: string }) => {
+      markSaved(filePath);
+    });
+
+    // File > Open (result comes back after dialog)
+    ipcRenderer.on('menu:open-result', (_: any, result: any) => {
+      if (result?.workspace) loadWorkspace(result.workspace);
+    });
+
+    // File > Close Project
+    ipcRenderer.on('menu:close-project', () => {
+      if (isDirty) {
+        const ok = window.confirm('You have unsaved changes. Close without saving?');
+        if (!ok) return;
+      }
+      closeProject();
+    });
+
+    return () => {
+      ipcRenderer.removeAllListeners('menu:new-project');
+      ipcRenderer.removeAllListeners('menu:save-result');
+      ipcRenderer.removeAllListeners('menu:open-result');
+      ipcRenderer.removeAllListeners('menu:close-project');
+    };
+  }, [isDirty, markSaved, loadWorkspace, closeProject, newProject]);
+
+  // Keyboard shortcut: Ctrl+S to trigger save via IPC
+  useEffect(() => {
+    const handleKeydown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+        e.preventDefault();
+        const ipcRenderer = (window as any).require?.('electron')?.ipcRenderer;
+        ipcRenderer?.invoke('project:save');
+      }
+    };
+    window.addEventListener('keydown', handleKeydown);
+    return () => window.removeEventListener('keydown', handleKeydown);
+  }, []);
+
+  // No project loaded → Welcome screen
+  if (!project) {
+    return (
+      <div style={{ width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', background: '#0d0d0d', overflow: 'hidden' }}>
+        <WelcomeScreen />
+      </div>
+    );
+  }
 
   return (
-    <div style={{
-      width: '100vw',
-      height: '100vh',
-      display: 'flex',
-      flexDirection: 'column',
-      background: '#121212',
-      overflow: 'hidden',
-    }}>
+    <div style={{ width: '100vw', height: '100vh', display: 'flex', flexDirection: 'column', background: '#121212', overflow: 'hidden' }}>
       {/* Top Bar — always visible */}
       <TopBar />
 
       {/* Main workspace row */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'row', overflow: 'hidden', minHeight: 0 }}>
-
-        {/* Left Sidebar */}
         <Sidebar />
 
-        {/* Canvas area — switches per tab, all remain mounted for zero-reload switching */}
+        {/* Canvas area */}
         <div style={{ flex: 1, position: 'relative', overflow: 'hidden', minWidth: 0 }}>
           <div style={{ display: activeTab === 'recon' ? 'block' : 'none', width: '100%', height: '100%' }}>
             <ReconCanvas />
@@ -40,7 +96,7 @@ export default function App() {
           </div>
         </div>
 
-        {/* Right Inspector Panel — docked, resizable */}
+        {/* Right Inspector Panel */}
         <InspectorPanel />
       </div>
     </div>
