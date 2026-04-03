@@ -65,6 +65,12 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeydown);
   }, []);
 
+  // Update native menu visibility
+  useEffect(() => {
+    const ipcRenderer = (window as any).require?.('electron')?.ipcRenderer;
+    ipcRenderer?.send('menu:set-visibility', !!project);
+  }, [project]);
+
   // No project loaded → Welcome screen
   if (!project) {
     return (

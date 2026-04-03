@@ -23,6 +23,7 @@ function createWindow() {
     width: 1200,
     height: 800,
     icon: path.join(__dirname, '../public/codeatlas_icon.png'),
+    autoHideMenuBar: true, // Let us control visibility
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false
@@ -53,6 +54,10 @@ function saveProjectToPath(filePath, workspace) {
   currentWorkspaceState = workspace;
   if (mainWindow) mainWindow.setTitle(`CodeAtlas — ${workspace.project?.name || 'Project'}`);
 }
+
+ipcMain.on('menu:set-visibility', (event, visible) => {
+  if (mainWindow) mainWindow.setMenuBarVisibility(visible);
+});
 
 // Renderer pushes current state before any save operation
 ipcMain.handle('project:push-state', (event, state) => {
