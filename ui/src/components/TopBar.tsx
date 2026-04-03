@@ -42,12 +42,11 @@ export default function TopBar() {
         display: 'flex', alignItems: 'center', gap: '8px',
         marginRight: '24px', flexShrink: 0,
       }}>
-        <div style={{
-          width: '22px', height: '22px', borderRadius: '5px',
-          background: 'linear-gradient(135deg, #007acc, #0e639c)',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: '11px', fontWeight: 'bold', color: 'white', fontFamily: 'monospace',
-        }}>CA</div>
+        <img
+          src="/codeatlas_icon.png"
+          alt="CodeAtlas Logo"
+          style={{ width: '22px', height: '22px' }}
+        />
         <span style={{ fontSize: '13px', fontWeight: 600, color: '#d4d4d4', letterSpacing: '0.03em' }}>
           CodeAtlas
         </span>

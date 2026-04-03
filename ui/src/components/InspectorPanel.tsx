@@ -132,10 +132,24 @@ export default function InspectorPanel() {
 
   const language = detectLanguage(inspectorNodeLabel);
 
+  // Internal ref to the editor instance for the Format command
+  const [editorInstance, setEditorInstance] = useState<any>(null);
+
   // Seed boilerplate when node changes
   useEffect(() => {
     if (!inspectorNodeId) return;
-    setCode(getBoilerplate(inspectorNodeLabel, language));
+    // Check if the node already has code saved
+    let existingCode = '';
+    const state = useGraphStore.getState();
+    const tabState = state[state.activeTab as keyof typeof state] as any;
+    if (tabState && tabState.nodes) {
+      const node = tabState.nodes.find((n: any) => n.id === inspectorNodeId);
+      if (node && node.data && node.data.code) {
+        existingCode = node.data.code;
+      }
+    }
+    
+    setCode(existingCode || getBoilerplate(inspectorNodeLabel, language));
     setOutputLines([{ text: `Loaded: ${inspectorNodeLabel} (${language})`, type: 'info' }]);
   }, [inspectorNodeId, inspectorNodeLabel, language]);
 
@@ -280,8 +294,39 @@ export default function InspectorPanel() {
     }
   }, [code, language, inspectorNodeLabel]);
 
-  // Clipboard paste fix
+  const handleFormat = useCallback(() => {
+    if (editorInstance) {
+      editorInstance.getAction('editor.action.formatDocument').run();
+      setOutputLines(prev => [{ text: 'Code formatted successfully', type: 'success' }, ...prev]);
+    }
+  }, [editorInstance]);
+
+  const handleSave = useCallback(() => {
+    const state = useGraphStore.getState();
+    const activeTab = state.activeTab;
+    const tabState = state[activeTab as keyof typeof state] as any;
+
+    if (!tabState || !inspectorNodeId) return;
+
+    // Update the node's data.code in the store
+    const updatedNodes = tabState.nodes.map((n: any) => 
+      n.id === inspectorNodeId ? { ...n, data: { ...n.data, code } } : n
+    );
+
+    state.setTabState(activeTab, { nodes: updatedNodes });
+    state.markDirty();
+
+    setOutputLines([{ text: 'FILE_SAVED', type: 'success' }, { text: `Saved changes to component: ${inspectorNodeLabel}`, type: 'info' }]);
+    setActiveTab('output');
+  }, [code, inspectorNodeId, inspectorNodeLabel]);
+
+  // Clipboard paste fix & set editor instance
   const handleEditorMount = useCallback((editor: any, monacoInstance: any) => {
+    setEditorInstance(editor);
+
+    // Setup format provider for JSON (example builtin) if needed
+    // But monaco has built-in formatters for JS/TS/JSON/HTML/CSS
+
     editor.onKeyDown(async (e: any) => {
       if ((e.ctrlKey || e.metaKey) && e.keyCode === monacoInstance.KeyCode.KeyV) {
         try {
@@ -368,15 +413,17 @@ export default function InspectorPanel() {
             <TerminalSquare size={13} /> Shell
           </button>
           <div style={{ flex: 1 }} />
-          <button style={{ display: 'flex', alignItems: 'center', gap: '5px', background: 'transparent', color: '#888', border: 'none', cursor: 'pointer', fontSize: '12px' }}
+          <button onClick={handleFormat} style={{ display: 'flex', alignItems: 'center', gap: '5px', background: 'transparent', color: '#888', border: 'none', cursor: 'pointer', fontSize: '12px' }}
             onMouseEnter={(e) => e.currentTarget.style.color = '#fff'}
             onMouseLeave={(e) => e.currentTarget.style.color = '#888'}
+            title="Auto-format code"
           >
             <CheckCircle size={13} /> Format
           </button>
-          <button style={{ display: 'flex', alignItems: 'center', gap: '5px', background: 'transparent', color: '#888', border: 'none', cursor: 'pointer', fontSize: '12px' }}
-            onMouseEnter={(e) => e.currentTarget.style.color = '#fff'}
+          <button onClick={handleSave} style={{ display: 'flex', alignItems: 'center', gap: '5px', background: 'transparent', color: '#888', border: 'none', cursor: 'pointer', fontSize: '12px' }}
+            onMouseEnter={(e) => e.currentTarget.style.color = '#10b981'}
             onMouseLeave={(e) => e.currentTarget.style.color = '#888'}
+            title="Save code to project"
           >
             <Save size={13} /> Save
           </button>

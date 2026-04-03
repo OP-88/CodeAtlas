@@ -23,9 +23,7 @@ const NODE_STYLE = {
   fontSize: '13px', fontWeight: 500, padding: '12px',
 };
 
-const initialNodes = [
-  { id: 'recon_0', position: { x: 250, y: 180 }, data: { label: 'CodeAtlas Core Engine' }, type: 'default', style: NODE_STYLE },
-];
+const initialNodes: any[] = [];
 
 function ReconFlow() {
   const rfRef = useRef<any>(null);

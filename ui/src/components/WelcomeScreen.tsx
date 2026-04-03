@@ -69,13 +69,14 @@ export default function WelcomeScreen() {
 
         {/* Logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
-          <div style={{
-            width: '48px', height: '48px', borderRadius: '10px',
-            background: 'linear-gradient(135deg, #007acc 0%, #0e3a5e 100%)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '20px', fontWeight: 800, color: 'white', fontFamily: 'monospace',
-            boxShadow: '0 0 30px rgba(0,122,204,0.3)',
-          }}>CA</div>
+          <img
+            src="/codeatlas_icon.png"
+            alt="CodeAtlas Logo"
+            style={{
+              width: '54px', height: '54px',
+              filter: 'drop-shadow(0 0 20px rgba(0,122,204,0.3))'
+            }}
+          />
           <div>
             <div style={{ fontSize: '24px', fontWeight: 700, color: '#e5e5e5', letterSpacing: '-0.02em' }}>CodeAtlas</div>
             <div style={{ fontSize: '12px', color: '#555', fontFamily: 'monospace' }}>Multi-Modal Code Cartography Engine — v2.0</div>
