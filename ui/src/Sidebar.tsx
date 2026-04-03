@@ -291,7 +291,9 @@ export default function Sidebar() {
                       <div
                         key={comp}
                         onDragStart={(event) => onDragStart(event, 'custom', comp)}
+                        onDoubleClick={() => window.dispatchEvent(new CustomEvent('spawn-node', { detail: { label: comp } }))}
                         draggable
+                        title="Drag or double-click to add to canvas"
                         style={{
                           display: 'flex', alignItems: 'center', gap: '9px',
                           padding: '7px 10px', background: 'transparent',

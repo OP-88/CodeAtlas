@@ -12,6 +12,7 @@ import {
 import '@xyflow/react/dist/style.css';
 import { Trash2, ExternalLink, SendToBack, Zap } from 'lucide-react';
 import { useGraphStore } from '../store/useGraphStore';
+import { useEffect } from 'react';
 
 let nodeCounter = 100;
 const getId = () => `recon_${nodeCounter++}`;
@@ -46,6 +47,30 @@ function ReconFlow() {
     if (!type || !label || !rfRef.current) return;
     const position = rfRef.current.screenToFlowPosition({ x: e.clientX, y: e.clientY });
     setNodes((nds) => nds.concat({ id: getId(), type: 'default', position, data: { label }, style: NODE_STYLE }));
+    useGraphStore.getState().markDirty();
+  }, [setNodes]);
+
+  // Listen for double-click spawns from the Sidebar
+  useEffect(() => {
+    const handleSpawn = (e: any) => {
+      const { label } = e.detail;
+      if (!rfRef.current) return;
+      
+      // Calculate center of the screen
+      const centerScreenX = window.innerWidth / 2;
+      const centerScreenY = window.innerHeight / 2;
+      const position = rfRef.current.screenToFlowPosition({ x: centerScreenX, y: centerScreenY });
+      
+      // Add slight random offset so they don't stack perfectly on top of each other
+      position.x += (Math.random() - 0.5) * 40;
+      position.y += (Math.random() - 0.5) * 40;
+
+      setNodes((nds) => nds.concat({ id: getId(), type: 'default', position, data: { label }, style: NODE_STYLE }));
+      useGraphStore.getState().markDirty();
+    };
+
+    window.addEventListener('spawn-node', handleSpawn);
+    return () => window.removeEventListener('spawn-node', handleSpawn);
   }, [setNodes]);
 
   const onNodeDoubleClick = useCallback((_e: React.MouseEvent, node: any) => {
