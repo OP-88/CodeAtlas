@@ -24,7 +24,7 @@ Traceback (most recent call last):
     from engine.graph_manager import GraphManager
 ModuleNotFoundError: No module named 'engine'
 
-up to date, audited 535 packages in 1s
+up to date, audited 535 packages in 5s
 
 109 packages are looking for funding
   run `npm fund` for details
@@ -39,14 +39,14 @@ To address all issues (including breaking changes), run:
 
 Run `npm audit` for details.
 
-> ui@0.0.0 build
+> codeatlas@0.0.0 build
 > vite build
 
 vite v8.0.3 building client environment for production...
 [2Ktransforming...✓ 3105 modules transformed.
 rendering chunks...
 computing gzip size...
-dist/index.html                                  0.87 kB │ gzip:     0.46 kB
+dist/index.html                                  0.83 kB │ gzip:     0.43 kB
 dist/assets/codicon-ngg6Pgfi.ttf               121.97 kB
 dist/assets/json.worker-CCzEOxDx.js            409.23 kB
 dist/assets/html.worker-Dg1SpGQ4.js            719.58 kB
@@ -154,7 +154,8 @@ dist/assets/editor.api2-HsDxDlX3.js          3,627.46 kB │ gzip:   926.82 kB
 - Using dynamic import() to code-split the application
 - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-✓ built in 2.77s
+✓ built in 3.33s
 Launching Standalone Application...
 CodeAtlas is running. Press Ctrl+C to stop.
 [CodeAtlas] node-pty spawned: /bin/bash
+[109809:0403/170755.719984:ERROR:ui/ozone/platform/wayland/host/wayland_data_drag_controller.cc:179] Invalid state when trying to start drag. source=kMouse

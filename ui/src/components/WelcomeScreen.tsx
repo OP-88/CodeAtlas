@@ -79,7 +79,7 @@ export default function WelcomeScreen() {
           />
           <div>
             <div style={{ fontSize: '24px', fontWeight: 700, color: '#e5e5e5', letterSpacing: '-0.02em' }}>CodeAtlas</div>
-            <div style={{ fontSize: '12px', color: '#555', fontFamily: 'monospace' }}>Multi-Modal Code Cartography Engine — v2.0</div>
+            <div style={{ fontSize: '12px', color: '#555', fontFamily: 'monospace' }}>Multi-Modal Code Cartography Engine — MVP</div>
           </div>
         </div>
 

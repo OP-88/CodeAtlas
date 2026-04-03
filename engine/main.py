@@ -4,7 +4,7 @@ from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from engine.graph_manager import GraphManager
 
-app = FastAPI(title="CodeAtlas Engine v2.0")
+app = FastAPI(title="CodeAtlas Engine MVP")
 graph_manager = GraphManager()
 
 # CORS locked to localhost only — this engine is not a public API
@@ -70,5 +70,5 @@ async def websocket_endpoint(websocket: WebSocket):
 
 if __name__ == "__main__":
     import uvicorn
-    print("[CodeAtlas Engine v2.0] Starting on ws://127.0.0.1:8000/ws")
+    print("[CodeAtlas Engine MVP] Starting on ws://127.0.0.1:8000/ws")
     uvicorn.run(app, host="127.0.0.1", port=8000, log_level="warning")

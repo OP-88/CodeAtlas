@@ -1,7 +1,7 @@
 <div align="center">
   <img src="ui/public/codeatlas_icon.png" alt="CodeAtlas Logo" width="160" />
 
-  # CodeAtlas v2.0
+  # CodeAtlas MVP
   **Multi-Modal Code Cartography & Diagnostic Engine**
   
   [![React](https://img.shields.io/badge/React-18-blue.svg)](https://reactjs.org/)
