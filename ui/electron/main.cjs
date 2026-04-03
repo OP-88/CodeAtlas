@@ -14,6 +14,10 @@ let currentWorkspaceState = null; // latest state pushed from renderer
 let mainWindow;
 let engineProcess;
 
+// Set name explicitly for Linux dock
+app.setName('CodeAtlas');
+try { app.setDesktopName('CodeAtlas'); } catch {}
+
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1200,
