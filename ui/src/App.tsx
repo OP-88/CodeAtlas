@@ -7,7 +7,7 @@ import Sidebar from './Sidebar';
 import { useGraphStore } from './store/useGraphStore';
 
 export default function App() {
-  const { activeTab, openInspector } = useGraphStore();
+  const { activeTab } = useGraphStore();
 
   return (
     <div style={{
@@ -25,7 +25,7 @@ export default function App() {
       <div style={{ flex: 1, display: 'flex', flexDirection: 'row', overflow: 'hidden', minHeight: 0 }}>
 
         {/* Left Sidebar */}
-        <Sidebar onOpenRawScript={() => openInspector('raw-script', 'Raw Script Engine')} />
+        <Sidebar />
 
         {/* Canvas area — switches per tab, all remain mounted for zero-reload switching */}
         <div style={{ flex: 1, position: 'relative', overflow: 'hidden', minWidth: 0 }}>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Search } from 'lucide-react';
+import { Box, Search, ChevronDown, ChevronRight, PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 
 const CATEGORIES = [
   {
@@ -154,8 +154,13 @@ const getDeviconClass = (name: string): string | null => {
 };
 
 
-export default function Sidebar({ onOpenRawScript }: { onOpenRawScript: () => void }) {
+export default function Sidebar() {
   const [searchQuery, setSearchQuery] = useState('');
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [collapsed, setCollapsed] = useState<Record<string, boolean>>({});
+
+  const toggleCategory = (name: string) =>
+    setCollapsed(prev => ({ ...prev, [name]: !prev[name] }));
 
   const onDragStart = (event: React.DragEvent, nodeType: string, label: string) => {
     event.dataTransfer.setData('application/reactflow', nodeType);
@@ -168,104 +173,154 @@ export default function Sidebar({ onOpenRawScript }: { onOpenRawScript: () => vo
     items: category.items.filter(item => item.toLowerCase().includes(searchQuery.toLowerCase()))
   })).filter(category => category.items.length > 0);
 
-  return (
-    <aside style={{ 
-      width: '280px',
-      minWidth: '280px',
-      flexShrink: 0,
-      background: '#1e1e1e', 
-      borderRight: '1px solid #333', 
-      display: 'flex', 
-      flexDirection: 'column', 
-      boxShadow: '2px 0 10px rgba(0,0,0,0.5)',
-      zIndex: 10
-    }}>
-      <div style={{ padding: '20px 15px 15px', borderBottom: '1px solid #333', display: 'flex', flexDirection: 'column', gap: '15px', background: '#252526' }}>
-        <h3 style={{ margin: '0', fontSize: '13px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase', color: '#a0a0a0' }}>
-          CodeAtlas Modules
-        </h3>
-        
-        <div 
-          onClick={onOpenRawScript}
-          style={{ 
-            display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
-            padding: '12px 12px', background: '#094771', 
-            border: '1px solid #1177bb', borderRadius: '4px', 
-            cursor: 'pointer', fontSize: '14px', fontWeight: 'bold', color: 'white', transition: 'background 0.2s',
-            boxShadow: '0 4px 6px rgba(0,0,0,0.3)'
+  // Collapsed icon-rail when sidebar is minimized
+  if (!sidebarOpen) {
+    return (
+      <aside style={{
+        width: '42px', minWidth: '42px', flexShrink: 0,
+        background: '#1e1e1e', borderRight: '1px solid #2d2d2d',
+        display: 'flex', flexDirection: 'column', alignItems: 'center',
+        paddingTop: '10px', zIndex: 10,
+      }}>
+        <button
+          onClick={() => setSidebarOpen(true)}
+          title="Expand library"
+          style={{
+            background: 'transparent', border: 'none', color: '#666',
+            cursor: 'pointer', padding: '8px', borderRadius: '4px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            transition: 'color 0.2s',
           }}
-          onMouseEnter={(e) => e.currentTarget.style.background = '#1177bb'}
-          onMouseLeave={(e) => e.currentTarget.style.background = '#094771'}
+          onMouseEnter={(e) => e.currentTarget.style.color = '#ccc'}
+          onMouseLeave={(e) => e.currentTarget.style.color = '#666'}
         >
-          <span style={{ fontSize: '18px', fontFamily: 'monospace' }}>{'</>'}</span>
-          <span>Raw Script Engine</span>
-        </div>
+          <PanelLeftOpen size={18} />
+        </button>
+      </aside>
+    );
+  }
 
+  return (
+    <aside style={{
+      width: '272px', minWidth: '272px', flexShrink: 0,
+      background: '#1e1e1e', borderRight: '1px solid #2d2d2d',
+      display: 'flex', flexDirection: 'column',
+      boxShadow: '2px 0 10px rgba(0,0,0,0.4)', zIndex: 10,
+    }}>
+      {/* Header row */}
+      <div style={{
+        padding: '10px 12px 10px 14px',
+        borderBottom: '1px solid #2d2d2d',
+        display: 'flex', alignItems: 'center',
+        justifyContent: 'space-between',
+        background: '#252526', flexShrink: 0,
+      }}>
+        <span style={{ fontSize: '11px', fontWeight: 600, letterSpacing: '0.07em', textTransform: 'uppercase', color: '#777' }}>
+          Module Library
+        </span>
+        <button
+          onClick={() => setSidebarOpen(false)}
+          title="Collapse library"
+          style={{
+            background: 'transparent', border: 'none', color: '#555',
+            cursor: 'pointer', padding: '3px', display: 'flex',
+            borderRadius: '3px', transition: 'color 0.2s',
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.color = '#ccc'}
+          onMouseLeave={(e) => e.currentTarget.style.color = '#555'}
+        >
+          <PanelLeftClose size={15} />
+        </button>
+      </div>
+
+      {/* Search */}
+      <div style={{ padding: '10px 12px', borderBottom: '1px solid #2d2d2d', flexShrink: 0 }}>
         <div style={{ position: 'relative' }}>
-          <Search size={14} style={{ position: 'absolute', left: '10px', top: '50%', transform: 'translateY(-50%)', color: '#888' }} />
-          <input 
-            type="text" 
-            placeholder="Search 150+ frameworks..." 
+          <Search size={13} style={{ position: 'absolute', left: '9px', top: '50%', transform: 'translateY(-50%)', color: '#555' }} />
+          <input
+            type="text"
+            placeholder="Search 150+ modules..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             style={{
-              width: '100%',
-              background: '#1e1e1e',
-              border: '1px solid #3c3c3c',
-              borderRadius: '4px',
-              padding: '8px 10px 8px 32px',
-              color: '#fff',
-              fontSize: '13px',
-              outline: 'none',
-              transition: 'border-color 0.2s'
+              width: '100%', background: '#1a1a1a',
+              border: '1px solid #333', borderRadius: '4px',
+              padding: '7px 10px 7px 30px',
+              color: '#ccc', fontSize: '12px', outline: 'none',
+              boxSizing: 'border-box',
             }}
             onFocus={(e) => e.currentTarget.style.borderColor = '#007acc'}
-            onBlur={(e) => e.currentTarget.style.borderColor = '#3c3c3c'}
+            onBlur={(e) => e.currentTarget.style.borderColor = '#333'}
           />
         </div>
       </div>
 
-      <div style={{ padding: '15px', overflowY: 'auto', flexGrow: 1 }}>
+      {/* Category list */}
+      <div style={{ overflowY: 'auto', flexGrow: 1, padding: '6px 0' }}>
         {filteredCategories.length === 0 ? (
-          <div style={{ color: '#888', fontSize: '13px', textAlign: 'center', marginTop: '20px' }}>No modules found</div>
+          <div style={{ color: '#555', fontSize: '12px', textAlign: 'center', marginTop: '20px' }}>No modules found</div>
         ) : (
-          filteredCategories.map(group => (
-            <div key={group.name} style={{ marginBottom: '15px' }}>
-              <div style={{ fontSize: '11px', color: '#858585', marginBottom: '8px', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
-                {group.name}
-              </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                {group.items.map(comp => (
-                  <div 
-                    key={comp}
-                    onDragStart={(event) => onDragStart(event, 'custom', comp)} 
-                    draggable 
-                    style={{ 
-                      display: 'flex', alignItems: 'center', gap: '10px',
-                      padding: '8px 12px', background: 'transparent', 
-                      border: '1px solid #3c3c3c', borderRadius: '4px', 
-                      cursor: 'grab', fontSize: '13px', color: '#d4d4d4', transition: 'all 0.2s',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = '#2a2d2e';
-                      e.currentTarget.style.borderColor = '#454545';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'transparent';
-                      e.currentTarget.style.borderColor = '#3c3c3c';
-                    }}
-                  >
-                    {getDeviconClass(comp) ? (
-                      <i className={`${getDeviconClass(comp)} colored`} style={{ fontSize: '16px' }}></i>
-                    ) : (
-                      <Box size={14} color="#007acc" />
-                    )}
-                    {comp}
+          filteredCategories.map(group => {
+            const isCollapsed = !!collapsed[group.name] && !searchQuery;
+            return (
+              <div key={group.name}>
+                {/* Category header — click to collapse */}
+                <button
+                  onClick={() => toggleCategory(group.name)}
+                  style={{
+                    width: '100%', display: 'flex', alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '7px 14px', background: 'transparent',
+                    border: 'none', cursor: 'pointer',
+                    color: '#666', fontSize: '10px',
+                    fontWeight: 700, letterSpacing: '0.07em',
+                    textTransform: 'uppercase', textAlign: 'left',
+                    transition: 'color 0.15s',
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.color = '#aaa')}
+                  onMouseLeave={(e) => (e.currentTarget.style.color = '#666')}
+                >
+                  {group.name}
+                  {isCollapsed ? <ChevronRight size={11} /> : <ChevronDown size={11} />}
+                </button>
+
+                {/* Items */}
+                {!isCollapsed && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', padding: '0 8px 8px 8px' }}>
+                    {group.items.map(comp => (
+                      <div
+                        key={comp}
+                        onDragStart={(event) => onDragStart(event, 'custom', comp)}
+                        draggable
+                        style={{
+                          display: 'flex', alignItems: 'center', gap: '9px',
+                          padding: '7px 10px', background: 'transparent',
+                          border: '1px solid transparent', borderRadius: '4px',
+                          cursor: 'grab', fontSize: '12px', color: '#c0c0c0',
+                          transition: 'all 0.15s',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.background = '#2a2d2e';
+                          e.currentTarget.style.borderColor = '#3c3c3c';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.background = 'transparent';
+                          e.currentTarget.style.borderColor = 'transparent';
+                        }}
+                      >
+                        {getDeviconClass(comp) ? (
+                          <i className={`${getDeviconClass(comp)} colored`} style={{ fontSize: '15px', flexShrink: 0 }}></i>
+                        ) : (
+                          <Box size={13} color="#007acc" style={{ flexShrink: 0 }} />
+                        )}
+                        {comp}
+                      </div>
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
-            </div>
-          ))
+            );
+          })
         )}
       </div>
     </aside>

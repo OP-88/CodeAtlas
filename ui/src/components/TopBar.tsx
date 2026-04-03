@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Map, Microscope, Zap, Wifi, WifiOff } from 'lucide-react';
+import { Map, Microscope, Zap, Wifi, WifiOff, Code2 } from 'lucide-react';
 import { useGraphStore } from '../store/useGraphStore';
 import type { EngineTab } from '../store/useGraphStore';
 
@@ -10,7 +10,7 @@ const TABS: { id: EngineTab; label: string; icon: React.ReactNode; description: 
 ];
 
 export default function TopBar() {
-  const { activeTab, setActiveTab } = useGraphStore();
+  const { activeTab, setActiveTab, openInspector } = useGraphStore();
   const [engineOnline, setEngineOnline] = useState(false);
 
   useEffect(() => {
@@ -89,6 +89,39 @@ export default function TopBar() {
 
       {/* Spacer */}
       <div style={{ flex: 1 }} />
+
+      {/* Raw Script Engine — far right anchor */}
+      <button
+        onClick={() => openInspector('raw-script', 'Raw Script Engine')}
+        title="Open Raw Script Engine"
+        style={{
+          display: 'flex', alignItems: 'center', gap: '7px',
+          padding: '5px 13px',
+          marginRight: '16px',
+          background: '#0e3a5e',
+          border: '1px solid #1177bb',
+          borderRadius: '4px',
+          color: '#60a5fa',
+          cursor: 'pointer',
+          fontSize: '12px',
+          fontWeight: 600,
+          letterSpacing: '0.02em',
+          transition: 'all 0.15s',
+          flexShrink: 0,
+          whiteSpace: 'nowrap',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = '#1177bb';
+          e.currentTarget.style.color = '#fff';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = '#0e3a5e';
+          e.currentTarget.style.color = '#60a5fa';
+        }}
+      >
+        <Code2 size={13} />
+        Raw Script
+      </button>
 
       {/* Engine Status */}
       <div style={{
