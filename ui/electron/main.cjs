@@ -30,6 +30,9 @@ function createWindow() {
     }
   });
 
+  // Hide on startup (Welcome Screen mode)
+  mainWindow.setMenuBarVisibility(false);
+
   // Start the Python Engine
   const isDev = process.env.NODE_ENV === 'development';
   if (isDev) {
