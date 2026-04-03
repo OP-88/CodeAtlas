@@ -23,7 +23,7 @@ function createWindow() {
     width: 1200,
     height: 800,
     icon: path.join(__dirname, '../public/codeatlas_icon.png'),
-    autoHideMenuBar: true, // Let us control visibility
+    autoHideMenuBar: false, // Don't let Native OS auto-hide it on focus loss
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false
@@ -236,7 +236,7 @@ app.whenReady().then(() => {
             dialog.showMessageBox({
               title: 'About CodeAtlas',
               message: 'CodeAtlas — Multi-Modal Code Cartography Engine',
-              detail: 'Version: MVP\n\nA specialized forensic workbench for mapping and simulating system architectures.',
+              detail: 'A specialized forensic workbench for mapping and simulating system architectures.',
               type: 'info'
             });
           }

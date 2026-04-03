@@ -24,7 +24,7 @@ Traceback (most recent call last):
     from engine.graph_manager import GraphManager
 ModuleNotFoundError: No module named 'engine'
 
-up to date, audited 535 packages in 1s
+up to date, audited 535 packages in 5s
 
 109 packages are looking for funding
   run `npm fund` for details
@@ -149,12 +149,13 @@ dist/assets/xterm-CavehEIW.js                  340.36 kB │ gzip:    86.30 kB
 dist/assets/index-CHpDw4RU.js                  533.68 kB │ gzip:   160.51 kB
 dist/assets/editor.api2-HsDxDlX3.js          3,627.46 kB │ gzip:   926.82 kB
 
+✓ built in 3.00s
 [plugin builtin:vite-reporter] 
 (!) Some chunks are larger than 500 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-✓ built in 2.82s
 Launching Standalone Application...
 CodeAtlas is running. Press Ctrl+C to stop.
 [CodeAtlas] node-pty spawned: /bin/bash
+[113379:0403/171714.382766:ERROR:content/browser/browser_main_loop.cc:290] GLib-GObject: ../gobject/gsignal.c:2699: instance '0x117c017aaac0' has no handler with id '7917'
