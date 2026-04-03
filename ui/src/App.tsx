@@ -5,11 +5,15 @@ import SimulatorPanel from './components/SimulatorPanel';
 import InspectorPanel from './components/InspectorPanel';
 import WelcomeScreen from './components/WelcomeScreen';
 import Sidebar from './Sidebar';
+import CommandPalette from './components/CommandPalette';
 import { useGraphStore } from './store/useGraphStore';
 import { useEffect } from 'react';
 
 export default function App() {
-  const { activeTab, project, isDirty, markSaved, loadWorkspace, closeProject, newProject } = useGraphStore();
+  const { 
+    activeTab, project, isDirty, markSaved, 
+    loadWorkspace, closeProject, newProject, openCommandPalette 
+  } = useGraphStore();
 
   // Wire Electron IPC menu events into the React store
   useEffect(() => {
@@ -44,15 +48,21 @@ export default function App() {
       closeProject();
     });
 
+    // Help > Search Commands
+    ipcRenderer.on('menu:search-commands', () => {
+      openCommandPalette();
+    });
+
     return () => {
       ipcRenderer.removeAllListeners('menu:new-project');
       ipcRenderer.removeAllListeners('menu:save-result');
       ipcRenderer.removeAllListeners('menu:open-result');
       ipcRenderer.removeAllListeners('menu:close-project');
+      ipcRenderer.removeAllListeners('menu:search-commands');
     };
-  }, [isDirty, markSaved, loadWorkspace, closeProject, newProject]);
+  }, [isDirty, markSaved, loadWorkspace, closeProject, newProject, openCommandPalette]);
 
-  // Keyboard shortcut: Ctrl+S to trigger save via IPC
+  // Keyboard shortcut: Ctrl+S for Save, Ctrl+Shift+P for Command Palette
   useEffect(() => {
     const handleKeydown = (e: KeyboardEvent) => {
       if ((e.ctrlKey || e.metaKey) && e.key === 's') {
@@ -60,10 +70,14 @@ export default function App() {
         const ipcRenderer = (window as any).require?.('electron')?.ipcRenderer;
         ipcRenderer?.invoke('project:save');
       }
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'p') {
+        e.preventDefault();
+        openCommandPalette();
+      }
     };
     window.addEventListener('keydown', handleKeydown);
     return () => window.removeEventListener('keydown', handleKeydown);
-  }, []);
+  }, [openCommandPalette]);
 
   // Update native menu visibility
   useEffect(() => {
@@ -105,6 +119,8 @@ export default function App() {
         {/* Right Inspector Panel */}
         <InspectorPanel />
       </div>
+      
+      <CommandPalette />
     </div>
   );
 }

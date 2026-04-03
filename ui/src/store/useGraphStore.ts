@@ -69,6 +69,11 @@ interface GraphStore {
   inspectorNodeLabel: string;
   openInspector: (nodeId: string, label: string) => void;
   closeInspector: () => void;
+
+  // Command Palette
+  isCommandPaletteOpen: boolean;
+  openCommandPalette: () => void;
+  closeCommandPalette: () => void;
 }
 
 // No persist — project files are the source of truth, not localStorage
@@ -145,4 +150,8 @@ export const useGraphStore = create<GraphStore>()((set, get) => ({
   inspectorNodeLabel: '',
   openInspector: (nodeId, label) => set({ inspectorOpen: true, inspectorNodeId: nodeId, inspectorNodeLabel: label }),
   closeInspector: () => set({ inspectorOpen: false, inspectorNodeId: null, inspectorNodeLabel: '' }),
+
+  isCommandPaletteOpen: false,
+  openCommandPalette: () => set({ isCommandPaletteOpen: true }),
+  closeCommandPalette: () => set({ isCommandPaletteOpen: false }),
 }));

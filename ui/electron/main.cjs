@@ -227,8 +227,15 @@ app.whenReady().then(() => {
       ]
     },
     {
+      label: 'Help',
       role: 'help',
       submenu: [
+        {
+          label: 'Search Commands',
+          accelerator: 'CmdOrCtrl+Shift+P',
+          click: () => mainWindow.webContents.send('menu:search-commands')
+        },
+        { type: 'separator' },
         {
           label: 'About CodeAtlas',
           click: async () => {
