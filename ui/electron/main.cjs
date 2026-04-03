@@ -1,4 +1,4 @@
-const { app, BrowserWindow, Menu } = require('electron');
+const { app, BrowserWindow, Menu, ipcMain } = require('electron');
 const path = require('path');
 const { spawn } = require('child_process');
 
@@ -30,6 +30,42 @@ function createWindow() {
       path.join(__dirname, '../../engine/main.py')
     ]);
   }
+}
+
+function setupPtyTerminal(mainWindow) {
+  let ptyProcess = null;
+
+  try {
+    const pty = require('node-pty');
+    const shell = process.env.SHELL || (process.platform === 'win32' ? 'powershell.exe' : 'bash');
+
+    ptyProcess = pty.spawn(shell, [], {
+      name: 'xterm-256color',
+      cols: 120,
+      rows: 30,
+      cwd: process.env.HOME || process.cwd(),
+      env: process.env,
+    });
+
+    // Stream pty output → renderer
+    ptyProcess.onData((data) => {
+      if (mainWindow && !mainWindow.isDestroyed()) {
+        mainWindow.webContents.send('terminal:data', data);
+      }
+    });
+
+    // Receive keystrokes from renderer → pty
+    ipcMain.on('terminal:write', (event, data) => ptyProcess.write(data));
+
+    // Resize pty when terminal window resizes
+    ipcMain.on('terminal:resize', (event, { cols, rows }) => ptyProcess.resize(cols, rows));
+
+    console.log('[CodeAtlas] node-pty spawned:', shell);
+  } catch (err) {
+    console.warn('[CodeAtlas] node-pty unavailable, terminal will use fallback spawn mode:', err.message);
+  }
+
+  return ptyProcess;
 }
 
 app.whenReady().then(() => {

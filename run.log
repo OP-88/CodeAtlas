@@ -23,3 +23,24 @@ Traceback (most recent call last):
   File "/home/marc/Verba-mvp/CodeAtlas/engine/main.py", line 5, in <module>
     from engine.graph_manager import GraphManager
 ModuleNotFoundError: No module named 'engine'
+
+up to date, audited 535 packages in 2s
+
+109 packages are looking for funding
+  run `npm fund` for details
+
+3 vulnerabilities (2 moderate, 1 high)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+
+> ui@0.0.0 build
+> vite build
+
+vite v8.0.3 building client environment for production...
+[2Ktransforming...
