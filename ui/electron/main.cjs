@@ -67,6 +67,13 @@ ipcMain.handle('project:push-state', (event, state) => {
   currentWorkspaceState = state;
 });
 
+// Toggle fullscreen
+ipcMain.handle('window:toggle-fullscreen', () => {
+  if (mainWindow) {
+    mainWindow.setFullScreen(!mainWindow.isFullScreen());
+  }
+});
+
 // Ctrl+S — save in-place or trigger Save As
 ipcMain.handle('project:save', async () => {
   if (!currentWorkspaceState) return { ok: false };

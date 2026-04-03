@@ -56,15 +56,13 @@ export default function CommandPalette() {
     {
       name: 'View: Toggle Fullscreen',
       action: () => {
-        // In this MVP we don't have a direct IPC for fullscreen unless we dispatch key event.
-        // But we can just alert it for now or implement via main process later.
-        console.log('Triggering fullscreen...');
+        const ipcRenderer = (window as any).require?.('electron')?.ipcRenderer;
+        ipcRenderer?.invoke('window:toggle-fullscreen');
       }
     },
     {
       name: 'Inspector: Format Code',
       action: () => {
-        // Dispatch custom event that InspectorPanel can listen to
         window.dispatchEvent(new CustomEvent('cmd:format-code'));
       }
     },
@@ -75,9 +73,15 @@ export default function CommandPalette() {
       }
     },
     {
-      name: 'Engine: Run Architecture Heuristics',
+      name: 'Inspector: Validate AST',
       action: () => {
-        window.dispatchEvent(new CustomEvent('cmd:run-heuristics'));
+        window.dispatchEvent(new CustomEvent('cmd:validate-ast'));
+      }
+    },
+    {
+      name: 'Inspector: Open Shell',
+      action: () => {
+        window.dispatchEvent(new CustomEvent('cmd:open-shell'));
       }
     }
   ];

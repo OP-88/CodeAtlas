@@ -320,6 +320,26 @@ export default function InspectorPanel() {
     setActiveTab('output');
   }, [code, inspectorNodeId, inspectorNodeLabel]);
 
+  // Listen for Command Palette custom events
+  useEffect(() => {
+    const onFormat = () => handleFormat();
+    const onSave = () => handleSave();
+    const onValidate = () => { setActiveTab('output'); handleValidate(); };
+    const onShell = () => setActiveTab('terminal');
+    
+    window.addEventListener('cmd:format-code', onFormat);
+    window.addEventListener('cmd:save-node', onSave);
+    window.addEventListener('cmd:validate-ast', onValidate);
+    window.addEventListener('cmd:open-shell', onShell);
+    
+    return () => {
+      window.removeEventListener('cmd:format-code', onFormat);
+      window.removeEventListener('cmd:save-node', onSave);
+      window.removeEventListener('cmd:validate-ast', onValidate);
+      window.removeEventListener('cmd:open-shell', onShell);
+    };
+  }, [handleFormat, handleSave]);
+
   // Clipboard paste fix & set editor instance
   const handleEditorMount = useCallback((editor: any, monacoInstance: any) => {
     setEditorInstance(editor);
