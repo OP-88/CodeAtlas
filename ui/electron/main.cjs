@@ -225,6 +225,23 @@ app.whenReady().then(() => {
         { type: 'separator' },
         { role: 'togglefullscreen', accelerator: 'F11' }
       ]
+    },
+    {
+      role: 'help',
+      submenu: [
+        {
+          label: 'About CodeAtlas',
+          click: async () => {
+            const { dialog } = require('electron');
+            dialog.showMessageBox({
+              title: 'About CodeAtlas',
+              message: 'CodeAtlas — Multi-Modal Code Cartography Engine',
+              detail: 'Version: MVP\n\nA specialized forensic workbench for mapping and simulating system architectures.',
+              type: 'info'
+            });
+          }
+        }
+      ]
     }
   ];
 
