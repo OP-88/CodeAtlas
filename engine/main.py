@@ -4,15 +4,16 @@ from fastapi import FastAPI, WebSocket
 from fastapi.middleware.cors import CORSMiddleware
 from engine.graph_manager import GraphManager
 
-app = FastAPI(title="CodeAtlas Engine MVP")
+app = FastAPI(title="CodeAtlas Engine v2.0")
 graph_manager = GraphManager()
 
+# CORS locked to localhost only — this engine is not a public API
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_origins=["http://localhost:5173", "http://localhost:8000"],
+    allow_credentials=False,
+    allow_methods=["GET", "POST"],
+    allow_headers=["Content-Type"],
 )
 
 @app.get("/api/health")
@@ -23,26 +24,51 @@ async def health_check():
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     try:
-        # Send initial graph state
+        # Send initial graph state on connect
         await websocket.send_text(json.dumps({
             "type": "GRAPH_UPDATE",
             "data": graph_manager.export_cytoscape()
         }))
         while True:
-            # wait for messages from UI (if any commands)
-            data = await websocket.receive_text()
-            pass
+            raw = await websocket.receive_text()
+            try:
+                msg = json.loads(raw)
+            except json.JSONDecodeError:
+                continue
+
+            action = msg.get("action")
+
+            if action == "GET_SUBGRAPH":
+                root_id = msg.get("rootNodeId")
+                depth = int(msg.get("depth", 2))
+                tab = msg.get("tab", "deconstructor")
+                subgraph = graph_manager.get_subgraph(root_id, depth)
+                await websocket.send_text(json.dumps({
+                    "type": "SUBGRAPH_RESPONSE",
+                    "tab": tab,
+                    "data": subgraph
+                }))
+
+            elif action == "RUN_HEURISTICS":
+                alerts = graph_manager.run_heuristics()
+                await websocket.send_text(json.dumps({
+                    "type": "HEURISTIC_REPORT",
+                    "data": alerts
+                }))
+
+            elif action == "ADD_NODE":
+                node_id = msg.get("id")
+                data = msg.get("data", {})
+                if node_id:
+                    graph_manager.add_node(node_id, data=data)
+
+            elif action == "ADD_EDGE":
+                graph_manager.add_edge(msg.get("source"), msg.get("target"), data=msg.get("data", {}))
+
     except Exception as e:
-        print("WebSocket Connection Closed:", e)
+        print(f"[Engine] WebSocket closed: {e}")
 
 if __name__ == "__main__":
     import uvicorn
-    # Generate some dummy data for the MVP canvas
-    graph_manager.add_node("frontend", data={"label": "React UI", "type": "frontend"})
-    graph_manager.add_node("backend", data={"label": "FastAPI", "type": "backend"})
-    graph_manager.add_node("db", data={"label": "PostgreSQL", "type": "database"})
-    graph_manager.add_edge("frontend", "backend", data={"label": "HTTP/REST"})
-    graph_manager.add_edge("backend", "db", data={"label": "TCP/5432"})
-
-    print("Starting CodeAtlas Engine on ws://localhost:8000/ws")
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    print("[CodeAtlas Engine v2.0] Starting on ws://127.0.0.1:8000/ws")
+    uvicorn.run(app, host="127.0.0.1", port=8000, log_level="warning")

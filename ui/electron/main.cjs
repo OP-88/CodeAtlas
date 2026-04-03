@@ -90,29 +90,25 @@ app.whenReady().then(() => {
     {
       label: 'Edit',
       submenu: [
-        { role: 'undo', accelerator: 'CmdOrCtrl+Z' },
-        { role: 'redo', accelerator: 'CmdOrCtrl+Y' },
+        { role: 'undo',      accelerator: 'CmdOrCtrl+Z' },
+        { role: 'redo',      accelerator: 'CmdOrCtrl+Shift+Z' },
         { type: 'separator' },
-        { role: 'cut', accelerator: 'CmdOrCtrl+X' },
-        { role: 'copy', accelerator: 'CmdOrCtrl+C' },
-        { role: 'paste', accelerator: 'CmdOrCtrl+V' },
-        { role: 'pasteAndMatchStyle', accelerator: 'CmdOrCtrl+Shift+V' },
-        { role: 'delete' },
+        { role: 'cut',       accelerator: 'CmdOrCtrl+X' },
+        { role: 'copy',      accelerator: 'CmdOrCtrl+C' },
+        { role: 'paste',     accelerator: 'CmdOrCtrl+V' },
+        { type: 'separator' },
         { role: 'selectAll', accelerator: 'CmdOrCtrl+A' }
       ]
     },
     {
       label: 'View',
       submenu: [
-        { role: 'reload' },
-        { role: 'forceReload' },
-        { role: 'toggleDevTools' },
+        // DevTools only available in development
+        ...(process.env.NODE_ENV === 'development'
+          ? [{ role: 'toggleDevTools', accelerator: 'CmdOrCtrl+Shift+I' }]
+          : []),
         { type: 'separator' },
-        { role: 'resetZoom' },
-        { role: 'zoomIn' },
-        { role: 'zoomOut' },
-        { type: 'separator' },
-        { role: 'togglefullscreen' }
+        { role: 'togglefullscreen', accelerator: 'F11' }
       ]
     }
   ];
@@ -121,6 +117,7 @@ app.whenReady().then(() => {
   Menu.setApplicationMenu(menu);
 
   createWindow();
+  setupPtyTerminal(mainWindow);
 
   // Grant unfettered async clipboard API access to the Monaco Editor
   mainWindow.webContents.session.setPermissionCheckHandler(() => true);

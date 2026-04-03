@@ -26,6 +26,22 @@ class GraphManager:
         data = nx.cytoscape_data(self.graph)
         return data["elements"]
 
+    def get_subgraph(self, root_id: str, depth: int = 2) -> Dict[str, Any]:
+        """Return only the nodes within `depth` hops of root_id — backend viewport filter.
+        Prevents pushing the full graph payload over the WebSocket."""
+        if root_id not in self.graph:
+            return {"nodes": [], "edges": []}
+        sub = nx.ego_graph(self.graph, root_id, radius=depth, undirected=True)
+        nodes = [
+            {"id": n, "data": dict(self.graph.nodes[n])}
+            for n in sub.nodes
+        ]
+        edges = [
+            {"source": u, "target": v, "data": dict(d)}
+            for u, v, d in sub.edges(data=True)
+        ]
+        return {"nodes": nodes, "edges": edges}
+
     def run_heuristics(self) -> List[Dict[str, Any]]:
         """Run deterministic static analysis rules against the graph"""
         alerts = []
