@@ -50,7 +50,6 @@ export default function TopBar() {
         <span style={{ fontSize: '13px', fontWeight: 600, color: '#d4d4d4', letterSpacing: '0.03em' }}>
           CodeAtlas
         </span>
-        <span style={{ fontSize: '10px', color: '#555', fontFamily: 'monospace' }}>MVP</span>
       </div>
 
       {/* Engine Tabs */}
