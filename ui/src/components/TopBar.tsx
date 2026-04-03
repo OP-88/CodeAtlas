@@ -43,7 +43,7 @@ export default function TopBar() {
         marginRight: '24px', flexShrink: 0,
       }}>
         <img
-          src="/codeatlas_icon.png"
+          src="./codeatlas_icon.png"
           alt="CodeAtlas Logo"
           style={{ width: '22px', height: '22px' }}
         />

@@ -24,7 +24,7 @@ Traceback (most recent call last):
     from engine.graph_manager import GraphManager
 ModuleNotFoundError: No module named 'engine'
 
-up to date, audited 535 packages in 3s
+up to date, audited 535 packages in 2s
 
 109 packages are looking for funding
   run `npm fund` for details
@@ -149,21 +149,12 @@ dist/assets/xterm-CavehEIW.js                  340.36 kB │ gzip:    86.30 kB
 dist/assets/index-DnpG3olW.js                  533.57 kB │ gzip:   160.48 kB
 dist/assets/editor.api2-HsDxDlX3.js          3,627.46 kB │ gzip:   926.82 kB
 
-[33m[PLUGIN_TIMINGS] Warning:[0m Your build spent significant time in plugins. Here is a breakdown:
-  - vite:css-post (20%)
-  - vite:worker-import-meta-url (19%)
-  - vite:css (18%)
-  - vite:build-import-analysis (15%)
-  - vite:asset (12%)
-See https://rolldown.rs/options/checks#plugintimings for more details.
-
 [plugin builtin:vite-reporter] 
 (!) Some chunks are larger than 500 kB after minification. Consider:
 - Using dynamic import() to code-split the application
 - Use build.rolldownOptions.output.codeSplitting to improve chunking: https://rolldown.rs/reference/OutputOptions.codeSplitting
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-✓ built in 3.61s
+✓ built in 3.06s
 Launching Standalone Application...
 CodeAtlas is running. Press Ctrl+C to stop.
 [CodeAtlas] node-pty spawned: /bin/bash
-[106372:0403/165518.689347:ERROR:components/dbus/xdg/request.cc:165] Request cancelled by user.

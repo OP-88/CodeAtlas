@@ -70,7 +70,7 @@ export default function WelcomeScreen() {
         {/* Logo */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
           <img
-            src="/codeatlas_icon.png"
+            src="./codeatlas_icon.png"
             alt="CodeAtlas Logo"
             style={{
               width: '54px', height: '54px',
